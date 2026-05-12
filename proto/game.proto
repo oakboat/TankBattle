@@ -1,0 +1,76 @@
+// proto/game.proto
+syntax = "proto3";
+
+package TankBattle;
+
+message Vector2D {
+    float x = 1;
+    float y = 2;
+}
+
+message TankState {
+    uint32 id = 1;
+    Vector2D position = 2;
+    float rotation = 3;
+    float turretRotation = 4;
+    uint32 health = 5;
+    bool isAlive = 6;
+    Vector2D velocity = 7;
+    string playerName = 8;
+}
+
+message Projectile {
+    uint32 id = 1;
+    uint32 ownerId = 2;
+    Vector2D position = 3;
+    Vector2D velocity = 4;
+    float rotation = 5;
+    bool isActive = 6;
+}
+
+message GameState {
+    repeated TankState tanks = 1;
+    repeated Projectile projectiles = 2;
+    uint32 gameTime = 3;
+}
+
+message PlayerInput {
+    uint32 playerId = 1;
+    bool forward = 2;
+    bool backward = 3;
+    bool turnLeft = 4;
+    bool turnRight = 5;
+    bool shoot = 6;
+    float turretTargetAngle = 7;
+}
+
+message PlayerInfo {
+    string playerName = 1;
+    uint32 requestedId = 2;
+}
+
+message ServerMessage {
+    enum Type {
+        GAME_STATE = 0;
+        PLAYER_JOINED = 1;
+        PLAYER_LEFT = 2;
+        GAME_EVENT = 3;
+        CONNECTION_ACK = 4;
+    }
+    Type type = 1;
+    GameState gameState = 2;
+    PlayerInfo playerInfo = 3;
+    string eventMessage = 4;
+    uint32 connectionId = 5;
+}
+
+message ClientMessage {
+    enum Type {
+        PLAYER_INPUT = 0;
+        JOIN_REQUEST = 1;
+        LEAVE_REQUEST = 2;
+    }
+    Type type = 1;
+    PlayerInput input = 2;
+    PlayerInfo playerInfo = 3;
+}
